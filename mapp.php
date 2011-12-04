@@ -30,10 +30,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require_once 'admin/admin_page.php';
 
-function mapp_configure_menus()
+function mapp_setup_menus()
 {
   add_action('admin_menu', 'mapp_admin_page_hook');
 }
 
-mapp_configure_menus();
+function mapp_setup_roles()
+{
+  /* Add "Accountant" role */
+  add_role("mapp_accountant", "MAPP Accountant", array(
+    'read' => true, // Be nice and let the accountant read posts
+  ));
+}
+
+function mapp_setup()
+{
+  mapp_setup_menus();
+  mapp_setup_roles();
+}
+
+mapp_setup();
 ?>
