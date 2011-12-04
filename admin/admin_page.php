@@ -1,15 +1,5 @@
 <?php
 /*
-Plugin Name: MAPP for WordPress
-Plugin URI: http://github.com/lockergnome/mapp-wordpress
-Description: Multi-Author Payment Plugin for WordPress
-Version: 0.1-alpha1
-Author: Eddie Ringle
-Author URI: http://eddieringle.com
-License: New BSD
-*/
-
-/*
 MAPP for WordPress
 Copyright (c) 2011, Eddie Ringle <eddie@eringle.net>
 All rights reserved.
@@ -28,12 +18,18 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once 'admin/admin_page.php';
-
-function mapp_configure_menus()
+function mapp_admin_page_render()
 {
-  add_action('admin_menu', 'mapp_admin_page_hook');
+  ?>
+  <div class="wrap">
+    <h2>MAPP for WordPress</h2>
+    <p>Thanks for using MAPP for WordPress!</p>
+  </div>
+  <?php
 }
 
-mapp_configure_menus();
+function mapp_admin_page_hook()
+{
+  add_menu_page("MAPP for WordPress", "MAPP for WordPress", "edit_posts", "mapp_admin", "mapp_admin_page_render");
+}
 ?>
