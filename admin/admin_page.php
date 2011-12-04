@@ -24,6 +24,16 @@ function mapp_admin_page_render()
   <div class="wrap">
     <h2>MAPP for WordPress</h2>
     <p>Thanks for using MAPP for WordPress!</p>
+    <h2>Pseudocode</h2>
+    <ol>
+      <li>Greet the user
+      <li>IF user is an admin/accountant, offer a selection of post contributors to select from here, else default to currently logged in user's stats
+      <li>IF user is an admin, show options to configure whether the selected user is paid per word or per post
+      <li>Show a field for the user to enter in a PayPal email for payments
+      <li>Display a list of posts made in the selected time range, list items should include words written for that post, along with the cost of the post. Above this should be a time range field
+      <li>Display calculated total cost of the selected user's posts for the selected time range
+      <li>IF user is an admin/accountant, show a "Pay now" button, but only if the selected user has a PayPal email set, of course.
+    </ol>
   </div>
   <?php
 }
