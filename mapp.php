@@ -30,9 +30,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require_once 'admin/admin_page.php';
 
+function mapp_setup_hooks()
+{
+  add_action('plugins_loaded', 'mapp_admin_page_hook_plugins');
+}
+
 function mapp_setup_menus()
 {
-  add_action('admin_menu', 'mapp_admin_page_hook');
+  add_action('admin_menu', 'mapp_admin_page_hook_menu');
 }
 
 function mapp_setup_roles()
@@ -45,6 +50,7 @@ function mapp_setup_roles()
 
 function mapp_setup()
 {
+  mapp_setup_hooks();
   mapp_setup_menus();
   mapp_setup_roles();
 }
