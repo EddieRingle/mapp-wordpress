@@ -21,7 +21,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 global $mapp_db_version;
 $mapp_db_version = "0.1alpha1";
 
-function mapp_admin_page_dbinstall()
+function mapp_page_dbinstall()
 {
   global $wpdb;
   global $mapp_db_version;
@@ -45,7 +45,7 @@ function mapp_admin_page_dbinstall()
   }
 }
 
-function mapp_admin_page_render()
+function mapp_page_render()
 {
   global $wpdb;
   $messages = array();
@@ -107,7 +107,7 @@ function mapp_admin_page_render()
   $is_accountant = current_user_can('mapp_accountant');
 
   if (isset($_POST) && isset($_POST['paypal_email'])) {
-    check_admin_referer('mapp_admin_set_paypal', 'mapp_nonce');
+    check_admin_referer('mapp_page_set_paypal', 'mapp_nonce');
     if (!is_email($_POST['paypal_email'])) {
       array_push($messages, array(
         'class' => 'error',
@@ -182,7 +182,7 @@ function mapp_admin_page_render()
       if ($no_users == false) {
     ?>
     <form name="mapp_user_select_form" method="get">
-      <input type="hidden" name="page" value="mapp_admin" />
+      <input type="hidden" name="page" value="mapp_page" />
       <select name="mapp_target_user">
       <?php
       foreach ($mapp_users as $mapp_user) {
@@ -217,8 +217,8 @@ function mapp_admin_page_render()
     ?>
     <p>MAPP uses PayPal to send writers payments. Please enter your PayPal email in the box below to make sure you get paid promptly.
       <form name="mapp_user_paypal_form" method="post">
-        <?php wp_nonce_field('mapp_admin_set_paypal', 'mapp_nonce'); ?>
-        <input type="hidden" name="page" value="mapp_admin" />
+        <?php wp_nonce_field('mapp_page_set_paypal', 'mapp_nonce'); ?>
+        <input type="hidden" name="page" value="mapp_page" />
         <input type="hidden" name="mapp_target_user" value="<?php echo $current_mapp_user->login; ?>" />
         <label for="paypal_email">PayPal email: </label>
         <input type="text" name="paypal_email" value="<?php echo $current_mapp_user->paypal; ?>" />
@@ -228,7 +228,7 @@ function mapp_admin_page_render()
     <h2>Writer Data</h2>
     <p>Select a date range to view post data:</p>
     <form name="mapp_user_post_range_form" method="get">
-      <input type="hidden" name="page" value="mapp_admin" />
+      <input type="hidden" name="page" value="mapp_page" />
       <input type="hidden" name="mapp_target_user" value="<?php echo $current_mapp_user->login; ?>" />
       <label for="from_date">From </label>
       <input type="text" name="from_date" value="<?php echo ($from_date == null) ? date("Y/m/d", strtotime('-14 days')) : $from_date; ?>" />
@@ -316,16 +316,16 @@ function mapp_admin_page_render()
   <?php
 }
 
-function mapp_admin_page_hook_menu()
+function mapp_page_hook_menu()
 {
-  add_menu_page("MAPP for WordPress", "MAPP for WordPress", "edit_posts", "mapp_admin", "mapp_admin_page_render");
+  add_menu_page("MAPP for WordPress", "MAPP for WordPress", "edit_posts", "mapp_page", "mapp_page_render");
 }
 
-function mapp_admin_page_hook_plugins()
+function mapp_page_hook_plugins()
 {
   global $mapp_db_version;
   if (get_site_option('mapp_db_version') != $mapp_db_version) {
-    mapp_admin_page_dbinstall();
+    mapp_page_dbinstall();
   }
 }
 ?>
