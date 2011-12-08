@@ -29,15 +29,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once 'admin/mapp_page.php';
+require_once 'admin/mapp_admin.php';
 
 function mapp_setup_hooks()
 {
   add_action('plugins_loaded', 'mapp_page_hook_plugins');
+  add_action('plugins_loaded', 'mapp_admin_hook_plugins');
 }
 
 function mapp_setup_menus()
 {
   add_action('admin_menu', 'mapp_page_hook_menu');
+  add_action('admin_menu', 'mapp_admin_hook_menu');
 }
 
 function mapp_setup_roles()
@@ -46,14 +49,19 @@ function mapp_setup_roles()
   add_role("mapp_accountant", "MAPP Accountant", array(
     'read' => true, // Be nice and let the accountant read posts
   ));
+  /* Add "mapp_admin" capability to Admins */
+  $admin_role = get_role('administrator');
+  $admin_role->add_cap('mapp_admin');
 }
 
 function mapp_setup()
 {
   mapp_setup_hooks();
   mapp_setup_menus();
-  mapp_setup_roles();
+  add_action('admin_init', 'mapp_setup_roles');
 }
 
-mapp_setup();
+if (is_admin()) {
+  mapp_setup();
+}
 ?>

@@ -102,6 +102,10 @@ function mapp_page_render()
   $user_posts = $wpdb->get_results($sql);
   $user_has_posts = $wpdb->num_rows > 0;
 
+  /* Get rates from options */
+  $post_flat_rate = number_format(round(get_option('mapp_post_flat_rate'), 2), 2);
+  $post_word_rate = number_format(round(get_option('mapp_post_word_rate'), 2), 2);
+
   /* Determine current user's roles */
   $is_admin = current_user_can('administrator');
   $is_accountant = current_user_can('mapp_accountant');
@@ -159,7 +163,7 @@ function mapp_page_render()
     }
   </style>
   <div class="wrap">
-    <h2>MAPP for WordPress</h2>
+    <h2>MAPP Dashboard</h2>
     <?php
     /* Display messages */
     foreach ($messages as $msg) {
@@ -243,15 +247,18 @@ function mapp_page_render()
           <th scope="col">Title</th>
           <th scope="col">Date</th>
           <th scope="col">Word Count</th>
-          <th scope="col">Cost @ $0.25/word</th>
+          <th scope="col">Cost @ $<?php echo $post_word_rate; ?>/word</th>
+          <th scope="col">Cost @ $<?php echo $post_flat_rate; ?>/post</th>
         </tr>
       </thead>
       <tbody id="the-list">
         <?php
         $total_word_count = 0;
+        $total_post_count = 0;
         foreach ($user_posts as $post) {
         $word_count = str_word_count(strip_tags($post->post_content), 0);
         $total_word_count += $word_count;
+        $total_post_count++;
         ?>
         <tr class="post type-post hentry">
           <td class="post-title page-title column-title">
@@ -263,20 +270,26 @@ function mapp_page_render()
           <td class="word-count column-words">
             <strong><?php echo $word_count; ?></strong>
           </td>
-          <td class="cost column-cost">
-            <strong>$<?php echo number_format(round($word_count * 0.25, 2), 2); ?></strong>
+          <td class="word-cost column-word-cost">
+            <strong>$<?php echo number_format(round($word_count * $post_word_rate, 2), 2); ?></strong>
+          </td>
+          <td class="flat-cost column-flat-cost">
+            <strong>$<?php echo $post_flat_rate; ?></strong>
           </td>
         </tr>
         <?php
         }
+        $total_post_cost = number_format(round($total_post_count * $post_flat_rate, 2), 2);
+        $total_word_cost = number_format(round($total_word_count * $post_word_rate, 2), 2);
         ?>
       </tbody>
       <tfoot style="background-color: #ECECEC; background-image: none; border-top-color:#ECECEC;">
         <tr>
-          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;">&nbsp;</th>
-          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;">&nbsp;</th>
-          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;"><strong>Total Cost:</strong></th>
-          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;"><strong>$<?php echo number_format(round($total_word_count * 0.25, 2), 2); ?></strong></th>
+          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;"><strong>Totals:</strong></th>
+          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;"><strong><?php echo $total_post_count, ' posts'; ?></strong></th>
+          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;"><strong><?php echo $total_word_count, ' words'; ?></strong></th>
+          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;"><strong>$<?php echo $total_word_cost; ?></strong></th>
+          <th scope="col" style="border-top: none; background-color: #ECECEC; background-image: none;"><strong>$<?php echo $total_post_cost; ?></strong></th>
         </tr>
       </tfoot>
       <tfoot>
@@ -284,7 +297,8 @@ function mapp_page_render()
           <th scope="col">Title</th>
           <th scope="col">Date</th>
           <th scope="col">Word Count</th>
-          <th scope="col">Cost @ $0.25/word</th>
+          <th scope="col">Cost @ $<?php echo $post_word_rate; ?>/word</th>
+          <th scope="col">Cost @ $<?php echo $post_flat_rate; ?>/post</th>
         </tr>
       </tfoot>
     </table>
@@ -292,12 +306,12 @@ function mapp_page_render()
     if ($is_admin || $is_accountant) {
     ?>
     <h3>Pay this Writer</h3>
-    <p>The button below will take you to PayPal in order to pay this writer for the amount totalling <strong>$<?php echo number_format(round($total_word_count * 0.25, 2), 2); ?></strong>.</p>
+    <p>The button below will take you to PayPal in order to pay this writer for the amount totalling <strong>$<?php echo $total_word_cost; ?></strong>.</p>
     <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
       <input type="hidden" name="cmd" value="_xclick" />
       <input type="hidden" name="business" value="<?php echo $current_mapp_user->paypal; ?>" />
       <input type="hidden" name="item_name" value="Writing for <?php echo get_bloginfo('name'); ?>" />
-      <input type="hidden" name="amount" value="<?php echo number_format(round($total_word_count * 0.25, 2), 2); ?>" />
+      <input type="hidden" name="amount" value="<?php echo $total_word_cost; ?>" />
       <input type="hidden" name="lc" value="US" />
       <input type="hidden" name="no_note" value="0" />
       <input type="hidden" name="no_shipping" value="0" />
@@ -318,7 +332,7 @@ function mapp_page_render()
 
 function mapp_page_hook_menu()
 {
-  add_menu_page("MAPP for WordPress", "MAPP for WordPress", "edit_posts", "mapp_page", "mapp_page_render");
+  add_menu_page("MAPP Dashboard", "MAPP Dashboard", "edit_posts", "mapp_page", "mapp_page_render");
 }
 
 function mapp_page_hook_plugins()
