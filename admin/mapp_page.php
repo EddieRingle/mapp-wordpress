@@ -19,7 +19,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 global $mapp_db_version;
-$mapp_db_version = "0.1alpha1";
+$mapp_db_version = "0.1-RC1";
 
 function mapp_page_dbinstall()
 {
