@@ -28,6 +28,7 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once 'lib/FreshBooksRequest/FreshBooksRequest.php';
 require_once 'admin/mapp_page.php';
 require_once 'admin/mapp_admin.php';
 
